@@ -8,7 +8,7 @@
         <!--View Controller-->
         <scene sceneID="itG-Wl-X77">
             <objects>
-                <viewController id="E2l-yS-ufD" sceneMemberID="viewController">
+                <viewController id="E2l-yS-ufD" customClass="ViewController" customModule="SimpleMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6m9-lY-JIa"/>
                         <viewControllerLayoutGuide type="bottom" id="Wom-bV-mdL"/>
@@ -24,7 +24,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </searchBar>
-                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="jgI-su-zHv">
+                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jgI-su-zHv">
                                         <rect key="frame" x="0.0" y="44" width="600" height="536"/>
                                     </mapView>
                                 </subviews>
@@ -44,6 +44,9 @@
                             <constraint firstItem="M6R-kx-lDG" firstAttribute="leading" secondItem="Ueh-Vi-5fo" secondAttribute="leading" id="yCk-Dx-kqj"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="jgI-su-zHv" id="bSi-0R-8WY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Y0-e5-CoG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
