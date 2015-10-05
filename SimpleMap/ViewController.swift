@@ -9,9 +9,11 @@
 import UIKit
 import MapKit
 
-class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var searchBar: UISearchBar!
+
     let locationManager = CLLocationManager()
 
     override func viewDidLoad() {
@@ -43,6 +45,32 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("Errors: " + error.localizedDescription)
     }
-    
+
+    // MARK: UISearchBarDelegate
+
+    // called when cancel button pressed
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
+    // called when text starts editing
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    // called when text ends editing
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+    }
+
+    // called when text changes (including clear)
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+
+    }
+
+    // called when keyboard search button pressed
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+
+    }
 }
 
