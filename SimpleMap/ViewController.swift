@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 import MapKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDelegate {
@@ -15,15 +16,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDe
     @IBOutlet weak var searchBar: UISearchBar!
 
     let locationManager = CLLocationManager()
+    var localSearch: MKLocalSearch?
+    var places: [MKMapItem] = []
+    var boundingRegion: MKCoordinateRegion?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
-        self.mapView.showsUserLocation = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,15 +29,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDe
         // Dispose of any resources that can be recreated.
     }
 
+    func startSearch(searchString: String, region: MKCoordinateRegion) {
+        let request = MKLocalSearchRequest()
+        request.naturalLanguageQuery = searchString
+        request.region = region
+
+        localSearch = MKLocalSearch(request: request)
+        localSearch?.startWithCompletionHandler({ (response, error) -> Void in
+            if (error != nil) {
+
+            } else {
+                self.places = response!.mapItems
+                self.boundingRegion = response!.boundingRegion
+            }
+        })
+
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+    }
+
     // MARK: CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
 
+        manager.stopUpdatingLocation()
+        manager.delegate = nil
+
         let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
-
         let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
+        mapView.setRegion(region, animated: true)
 
-        self.mapView.setRegion(region, animated: true)
+        if let searchString = searchBar.text {
+            startSearch(searchString, region: region)
+        }
     }
 
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
@@ -70,7 +91,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDe
 
     // called when keyboard search button pressed
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
 
+        if(!CLLocationManager.locationServicesEnabled()) {
+            requestToTurnOnLocationServices()
+        }
+
+        if(CLLocationManager.authorizationStatus() == CLAuthorizationStatus.NotDetermined ) {
+            locationManager.requestAlwaysAuthorization()
+            return
+        } else if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.Denied) {
+            requestToAuthorizeLocationServiceForApp()
+            return
+        }
+
+        // Proceed if everything is fine
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.startUpdatingLocation()
+        mapView.showsUserLocation = true
+    }
+
+    func requestToTurnOnLocationServices() {
+        let alert = UIAlertController.init(title: "Location services", message: "Location services are not enabled for this device. Please enable location services in settings", preferredStyle: UIAlertControllerStyle.Alert)
+        let defaultAction = UIAlertAction.init(title: "Dismiss", style: UIAlertActionStyle.Default) { (UIAlertAction) -> Void in}
+        alert.addAction(defaultAction)
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    func requestToAuthorizeLocationServiceForApp() {
+        let alert = UIAlertController.init(title: "Location services", message: "Location services are disable for this application. Please enable location services for this app in settings.", preferredStyle: UIAlertControllerStyle.Alert)
+        let defaultAction = UIAlertAction.init(title: "Dismiss", style: UIAlertActionStyle.Default) { (UIAlertAction) -> Void in}
+        alert.addAction(defaultAction)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 }
 
