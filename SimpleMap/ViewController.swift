@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UISearchBarDelegate {
+class ViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -66,9 +66,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             browser.url = place.url
         }
     }
+}
 
-    // MARK: MKMapViewDelegate
-
+// MARK: MKMapViewDelegate
+extension ViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         var annotationView: MKPinAnnotationView?
 
@@ -89,9 +90,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         performSegueWithIdentifier("showWebpage", sender: view.annotation)
     }
+}
 
-    // MARK: CLLocationManagerDelegate
-
+// MARK: CLLocationManagerDelegate
+extension ViewController: CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
 
@@ -107,12 +109,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         }
     }
 
+
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("Errors: " + error.localizedDescription)
     }
+}
 
-    // MARK: UISearchBarDelegate
-
+// MARK: UISearchBarDelegate
+extension ViewController: UISearchBarDelegate{
     // called when cancel button pressed
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
@@ -169,5 +173,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         alert.addAction(defaultAction)
         self.presentViewController(alert, animated: true, completion: nil)
     }
+    
 }
 
