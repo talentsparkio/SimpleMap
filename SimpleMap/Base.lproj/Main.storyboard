@@ -29,6 +29,9 @@
                                     </searchBar>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jgI-su-zHv">
                                         <rect key="frame" x="0.0" y="44" width="600" height="492"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="E2l-yS-ufD" id="GBL-kR-30p"/>
+                                        </connections>
                                     </mapView>
                                 </subviews>
                                 <constraints>
@@ -51,11 +54,45 @@
                     <connections>
                         <outlet property="mapView" destination="jgI-su-zHv" id="bSi-0R-8WY"/>
                         <outlet property="searchBar" destination="5v8-Iw-vwf" id="gg5-sD-bGm"/>
+                        <segue destination="lrR-4B-idg" kind="show" identifier="showWebpage" id="iNq-Ci-WV4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Y0-e5-CoG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="983" y="256"/>
+        </scene>
+        <!--Web Browser Controller-->
+        <scene sceneID="WH1-5a-4Ib">
+            <objects>
+                <viewController id="lrR-4B-idg" customClass="WebBrowserController" customModule="SimpleMap" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="urs-sx-Xg1"/>
+                        <viewControllerLayoutGuide type="bottom" id="Xhy-vR-JkK"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ACD-qH-fq4">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ViH-0Z-kvF">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ViH-0Z-kvF" firstAttribute="leading" secondItem="ACD-qH-fq4" secondAttribute="leading" id="978-ot-fjb"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="ViH-0Z-kvF" secondAttribute="bottom" id="eua-VN-hPB"/>
+                            <constraint firstItem="ViH-0Z-kvF" firstAttribute="top" secondItem="ACD-qH-fq4" secondAttribute="topMargin" id="hqw-He-T6K"/>
+                            <constraint firstAttribute="trailing" secondItem="ViH-0Z-kvF" secondAttribute="trailing" id="oNk-Vu-Azk"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="browser" destination="ViH-0Z-kvF" id="K8f-TZ-Ky3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ake-wk-eiL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1724" y="256"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="7wN-9c-SKC">

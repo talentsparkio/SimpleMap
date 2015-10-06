@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UISearchBarDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -59,7 +59,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDe
         }
     }
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if(segue.identifier == "showWebpage") {
+            let browser = segue.destinationViewController as! WebBrowserController
+            let place = sender as! PlaceAnnotation
+            browser.url = place.url
+        }
+    }
+
+    // MARK: MKMapViewDelegate
+
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView: MKPinAnnotationView?
+
+        if let annotation = annotation as? PlaceAnnotation {
+            annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("Pin") as? MKPinAnnotationView
+
+            if (annotationView == nil) {
+                annotationView = MKPinAnnotationView.init(annotation: annotation, reuseIdentifier: "Pin")
+                annotationView!.canShowCallout = true
+                annotationView!.animatesDrop = true
+                annotationView!.rightCalloutAccessoryView = UIButton.init(type: UIButtonType.DetailDisclosure)
+            }
+        }
+
+        return annotationView;
+    }
+
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        performSegueWithIdentifier("showWebpage", sender: view.annotation)
+    }
+
     // MARK: CLLocationManagerDelegate
+
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
 
