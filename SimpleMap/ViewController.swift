@@ -17,8 +17,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDe
 
     let locationManager = CLLocationManager()
     var localSearch: MKLocalSearch?
-    var places: [MKMapItem] = []
-    var boundingRegion: MKCoordinateRegion?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,14 +35,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UISearchBarDe
         localSearch = MKLocalSearch(request: request)
         localSearch?.startWithCompletionHandler({ (response, error) -> Void in
             if (error != nil) {
-
+                // perform some error reporting
             } else {
-                self.places = response!.mapItems
-                self.boundingRegion = response!.boundingRegion
+                let places = response!.mapItems
+                let boundingRegion = response!.boundingRegion
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.updateMapWith(places, inRegion: boundingRegion)
+                }
             }
         })
 
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+    }
+
+    func updateMapWith(places: [MKMapItem], inRegion boundingRegion: MKCoordinateRegion) {
+        mapView.removeAnnotations(mapView.annotations)
+
+        mapView.setRegion(boundingRegion, animated: true)
+
+        for place in places {
+            let annotation = PlaceAnnotation(coordinate: place.placemark.coordinate, title: place.name, url: place.url, phone: place.phoneNumber)
+            mapView.addAnnotation(annotation)
+        }
     }
 
     // MARK: CLLocationManagerDelegate
